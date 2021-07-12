@@ -1,4 +1,5 @@
 import { createGlobalStyle, ThemeProvider } from 'styled-components'
+import { AlurakutStyles } from '../src/lib/AluraCommons';
 
 const GlobalStyle = createGlobalStyle`
   /* Reset  */
@@ -9,7 +10,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    background: #D9E6F6;
+    background: #666;
     font-family: sans-serif;
   }
 
@@ -23,6 +24,7 @@ const GlobalStyle = createGlobalStyle`
     height: auto;
     display: block;
   }
+  ${AlurakutStyles}
 `
 
 const theme = {
