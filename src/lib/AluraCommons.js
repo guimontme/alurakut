@@ -39,7 +39,7 @@ export function AlurakutMenu({ githubUser }) {
             Sair
           </a>
           <div>
-            <input placeholder="Pesquisar no Orkut" />
+            <input placeholder="Pesquisar no Alurakut" />
           </div>
         </nav>
 
@@ -192,23 +192,23 @@ function AlurakutMenuProfileSidebar({ githubUser }) {
 // ================================================================================================================
 // AlurakutProfileSidebarMenuDefault
 // ================================================================================================================
-export function AlurakutProfileSidebarMenuDefault() {
+export function AlurakutProfileSidebarMenuDefault( { githubUser } ) {
   return (
     <AlurakutProfileSidebarMenuDefault.Wrapper>
       <nav>
-        <a href="/">
+        <a href={`/users/${githubUser}`}>
           <img src={`${BASE_URL}/icons/user.svg`} />
             Perfil
           </a>
-        <a href="/">
+        <a href={`/users/${githubUser}/scraps`}>
           <img src={`${BASE_URL}/icons/book.svg`} />
             Recados
           </a>
-        <a href="/">
+        <a href={`/users/${githubUser}/photos`}>
           <img src={`${BASE_URL}/icons/camera.svg`} />
             Fotos
           </a>
-        <a href="/">
+        <a href={`/users/${githubUser}/depoiments`}>
           <img src={`${BASE_URL}/icons/sun.svg`} />
             Depoimentos
           </a>
