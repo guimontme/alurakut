@@ -8,8 +8,6 @@ import React from 'react';
 
 export default function Home() {
   const user = 'guimontme';
-  const userName = 'GuiMont';
-  
   const [communities, setCommunities] = React.useState([{
     id: '12324120992838',
     title: 'Alura',
