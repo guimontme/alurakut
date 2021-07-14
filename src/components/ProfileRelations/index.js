@@ -1,32 +1,48 @@
 import styled from 'styled-components';
 import Box from '../Box';
 
-export function ProfileRelationsBox ( { type, title, elements, max } ) {
-  const newElements = elements.map((element, index) =>{
-    if (type === 'friends') {
+export function ProfileRelationsBox ( { type, title, items, max } ) {
+  let newElements = [];
+  if (type === 'friends') {
+  newElements = items.map((item, index) =>{
       const obj = {
         id: index,
-        title: element,
-        image: `https://github.com/${element}.png`,
-        url: `/users/${element.title}`
+        title: item,
+        image: `https://github.com/${item}.png`,
+        url: `/users/${item.title}`
       };
       return obj; 
-    } 
-    return element;
-  });
+    });
+  } 
+  else if (type === 'followers') {
+    newElements = items.map((item) =>{
+        const obj = {
+          id: item.id,
+          title: item.login,
+          image: `https://github.com/${item.login}.png`,
+          url: `/users/${item.login}`
+        };
+        return obj; 
+      });
+  } 
+  else {
+    newElements = items;
+  }
+
+    
   return (
     <ProfileRelationsBox.Wrapper>
         <h2 className="smallTitle">
-          {title} ({elements.length})
+          {title} <span className="numberBox">({items.length})</span>
         </h2>
         <ul>
-          {newElements.map((element, index) => {
+          {newElements.map((item, index) => {
               if(index < max) {
                 return (
-                  <li key={element.id}>
-                    <a href={element.url} >
-                      <img src={element.image} />
-                      <span>{element.title}</span>
+                  <li key={item.id}>
+                    <a href={item.url} >
+                      <img src={item.image} />
+                      <span>{item.title}</span>
                     </a>
                   </li>
                 )
