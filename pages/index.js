@@ -8,25 +8,6 @@ import React from 'react';
 
 export default function Home() {
   const user = 'guimontme';
-  const [communities, setCommunities] = React.useState([{
-    id: '12324120992838',
-    title: 'Alura',
-    image: 'https://picsum.photos/200/300?random=1',
-    url: 'alura'
-  }]);
-
-  const [followers, setFollowers] = React.useState([]);
-  const fetchFollowers = () => {
-    fetch(`https://api.github.com/users/${user}/followers`)
-      .then(response => response.json())
-      .then(data => {
-        setFollowers(data);
-      }) 
-      .catch((err) => {
-        console.error(err);
-      });
-  };
-  React.useEffect(fetchFollowers, [])
 
   const [userObj, setUser] = React.useState({});
   const fetchUser = () => {
@@ -39,7 +20,49 @@ export default function Home() {
       console.error(err);
     });
 };
-  React.useEffect(fetchUser, []);
+React.useEffect(fetchUser, []);
+
+  const [followers, setFollowers] = React.useState([]);
+  const fetchFollowers = async () => {
+      await fetch(`https://api.github.com/users/${user}/followers`)
+      .then( async (response) => {
+        const data = await response.json();
+        setFollowers(data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+  React.useEffect(fetchFollowers, [])
+
+  const [communities, setCommunities] = React.useState([]);
+  const fetchCommunities = async () => {
+    const options = {
+      method: 'POST', 
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'fce62a3ab1103a4030135f092bda5e',
+      }, 
+      body: JSON.stringify({"query": `query {
+        allCommunities {
+          id
+          title
+          imageUrl
+          creatorSlug
+        }
+      }`})
+    };
+    await fetch('https://graphql.datocms.com/', options)
+      .then(response => response.json())
+      .then((dataJson) => {
+        const comunidadesFromDato = dataJson.data.allCommunities;
+        setCommunities(comunidadesFromDato);
+      })
+     
+
+  };
+  React.useEffect(fetchCommunities, []);
 
 
   const communityFriends = [
@@ -66,6 +89,7 @@ export default function Home() {
         <div style={{ gridArea: 'welcomeArea' }} className="welcomeArea">
           <Box>
             <h1 className="title">Bem-vindo(a), { userObj.name }</h1>
+            <p className="subTitle"> { userObj.bio } </p>
             <OrkutNostalgicIconSet fans={1000} sexy={3} />
           </Box>
           <Box>
@@ -73,19 +97,26 @@ export default function Home() {
             <form onSubmit={ function handleCriarComunidade(e) {
                 e.preventDefault();
                 const dadosForm = new FormData(e.target);
-
-                const title = dadosForm.get('title');
-                const url = title.toLowerCase().replaceAll(' ', '-');
-                const id = new Date().getTime();
-
+                
                 const community = {
-                  id: id,
                   title: dadosForm.get('title'),
-                  image: `https://picsum.photos/200/300?random=${dadosForm.get('image')}`, // Provisório
-                  url: `/community/${url+'-'+id}`
+                  imageUrl: dadosForm.get('image'), // Provisório
+                  creatorSlug: user,
                 }
-                const updatedCommunities = [...communities, community];
-                setCommunities(updatedCommunities);
+                fetch('/api/communities', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(community),
+                })
+                .then(async (response) => {
+                  const dados = await response.json();
+                  const communityNew = dados.registerCreated;
+                  const updatedCommunities = [communityNew, ...communities];
+                  setCommunities(updatedCommunities);
+                })
+
             }}>
               <input 
                 type="text"
@@ -105,8 +136,8 @@ export default function Home() {
         </div>
 
         <div style={{ gridArea: 'profileRelationsArea' }} className="welcomeArea">
-          <ProfileRelationsBox title="Seguidores" type="followers" max="6" items={followers} />
           <ProfileRelationsBox type="communities" title="Comunidades" max="6" items={communities} />
+          <ProfileRelationsBox title="Seguidores" type="followers" max="6" items={followers} />
           <ProfileRelationsBox type="friends" title="Pessoas da comunidade" max="6" items={communityFriends} />
         </div>
       </MainGrid>

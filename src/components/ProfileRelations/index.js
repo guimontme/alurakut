@@ -2,9 +2,10 @@ import styled from 'styled-components';
 import Box from '../Box';
 
 export function ProfileRelationsBox ( { type, title, items, max } ) {
-  let newElements = [];
+
+  let newItems = [];
   if (type === 'friends') {
-  newElements = items.map((item, index) =>{
+  newItems = items.map((item, index) =>{
       const obj = {
         id: index,
         title: item,
@@ -15,7 +16,7 @@ export function ProfileRelationsBox ( { type, title, items, max } ) {
     });
   } 
   else if (type === 'followers') {
-    newElements = items.map((item) =>{
+    newItems = items.map((item) =>{
         const obj = {
           id: item.id,
           title: item.login,
@@ -25,8 +26,19 @@ export function ProfileRelationsBox ( { type, title, items, max } ) {
         return obj; 
       });
   } 
+  else if (type === 'communities') {
+    newItems = items.map((item) =>{
+        const obj = {
+          id: item.id,
+          title: item.title,
+          image: item.imageUrl,
+          url: `/communities/${item.id}`
+        };
+        return obj; 
+      });
+  } 
   else {
-    newElements = items;
+    newItems = items;
   }
 
     
@@ -36,7 +48,7 @@ export function ProfileRelationsBox ( { type, title, items, max } ) {
           {title} <span className="numberBox">({items.length})</span>
         </h2>
         <ul>
-          {newElements.map((item, index) => {
+          {newItems.map((item, index) => {
               if(index < max) {
                 return (
                   <li key={item.id}>
