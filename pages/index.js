@@ -97,25 +97,31 @@ React.useEffect(fetchUser, []);
             <form onSubmit={ function handleCriarComunidade(e) {
                 e.preventDefault();
                 const dadosForm = new FormData(e.target);
-                
-                const community = {
-                  title: dadosForm.get('title'),
-                  imageUrl: dadosForm.get('image'), // Provisório
-                  creatorSlug: user,
+                const title = dadosForm.get('title');
+                const image = dadosForm.get('image');
+                const condition = (title && (image.includes('http://') || image.includes('https://')));
+
+                if(condition) {
+                  const community = {
+                    title: dadosForm.get('title'),
+                    imageUrl: dadosForm.get('image'), // Provisório
+                    creatorSlug: user,
+                  }
+                  fetch('/api/communities', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(community),
+                  })
+                  .then(async (response) => {
+                    const dados = await response.json();
+                    const communityNew = dados.registerCreated;
+                    const updatedCommunities = [communityNew, ...communities];
+                    setCommunities(updatedCommunities);
+                  })
                 }
-                fetch('/api/communities', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify(community),
-                })
-                .then(async (response) => {
-                  const dados = await response.json();
-                  const communityNew = dados.registerCreated;
-                  const updatedCommunities = [communityNew, ...communities];
-                  setCommunities(updatedCommunities);
-                })
+               
 
             }}>
               <input 
@@ -123,12 +129,14 @@ React.useEffect(fetchUser, []);
                 placeholder="Qual vai ser o nome da sua comunidade?"
                 aria-label="Qual vai ser o nome da sua comunidade?"
                 name="title"
+                required
                />
               <input 
                 type="text"
                 placeholder="Coloque uma URL para usarmos de capa"
                 aria-label="Coloque uma URL para usarmos de capa"
                 name="image"
+                required
                />
                <button type="submit">Criar comunidade</button>
             </form>
