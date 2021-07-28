@@ -1,18 +1,14 @@
-import Head from 'next/head';
 import React from 'react';
-import nookies from "nookies";
-import jwt from 'jsonwebtoken';
+import Head from 'next/head';
 
-import MainGrid from '../src/components/MainGrid';
-import Box from '../src/components/Box';
-import ProfileSidebar from '../src/components/ProfileSidebar';
-import { ProfileRelationsBox }  from '../src/components/ProfileRelations';
+import MainGrid from '../../src/components/MainGrid';
+import Box from '../../src/components/Box';
+import { AlurakutMenu, OrkutNostalgicIconSet } from '../../src/lib/AluraCommons';
+import { ProfileRelationsBox }  from '../../src/components/ProfileRelations';
+import ProfileSidebar from '../../src/components/ProfileSidebar';
 
-import { Link, AlurakutMenu, OrkutNostalgicIconSet } from '../src/lib/AluraCommons';
-
-export default function Home(props) {
-  const user = props.githubUser;
-  // const user = 'guimontme';
+export default function CommunityPage() {
+  const user = 'guimontme';
 
   const [userObj, setUser] = React.useState({});
   const fetchUser = () => {
@@ -80,7 +76,7 @@ export default function Home(props) {
   return (
     <>
       <Head>
-        <title>Alurakut - { userObj.name ? userObj.name : userObj.login }</title>
+        <title>Alurakut - Community</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <AlurakutMenu githubUser={user} />
@@ -91,12 +87,12 @@ export default function Home(props) {
         
         <div style={{ gridArea: 'welcomeArea' }} className="welcomeArea">
           <Box>
-            <h1 className="title">Welcome, { userObj.name }</h1>
+            <h1 className="title">Bem-vindo(a), { userObj.name }</h1>
             <p className="subTitle"> { userObj.bio } </p>
             <OrkutNostalgicIconSet fans={1000} sexy={3} />
           </Box>
           <Box>
-            <h2 className="subTitle">What do you wanna do?</h2>
+            <h2 className="subTitle">O que você deseja fazer?</h2>
             <form onSubmit={ function handleCriarComunidade(e) {
                 e.preventDefault();
                 const dadosForm = new FormData(e.target);
@@ -147,56 +143,9 @@ export default function Home(props) {
         </div>
 
         <div style={{ gridArea: 'profileRelationsArea' }} className="welcomeArea">
-          <ProfileRelationsBox type="communities" title="Communities" max="6" items={communities} />
-          <ProfileRelationsBox title="Followers" type="followers" max="6" items={followers} />
-          <ProfileRelationsBox type="friends" title="Friends" max="6" items={communityFriends} />
+          <ProfileRelationsBox type="friends" title="Comunnity's members" max="6" items={communityFriends} />
         </div>
       </MainGrid>
     </>
   )
-}
-
-export async function getServerSideProps(context) {
-  const cookies = nookies.get(context);
-  const token = cookies.USER_TOKEN;
-  
-  // verify is user right
-
-  if(!token) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false
-      }
-    }
-  }
-
-  const { githubUser } = jwt.decode(token);   
-
-  // const { isAuthenticated } = await fetch('https://alurakut.vercel.app/api/auth', {
-  //   headers: {
-  //       Authorization: token
-  //     }
-  // })
-  // .then((resposta) => resposta.json())
-  // console.log(isAuthenticated);
-  
-  const status = await fetch(`https://github.com/${githubUser}`)
-  .then((resposta) => resposta.status)
-
-  if(status !== 200) {
-    return {
-      redirect: {
-        destination: '/logout',
-        permanent: false,
-      }
-    }
-  }
-
-        
-  return {
-    props: {
-      githubUser
-    }, // will be passed to the page component as props
-  }
 }

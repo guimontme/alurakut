@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import Box from '../Box';
+import { Link } from '../../lib/AluraCommons';
 
 export function ProfileRelationsBox ( { type, title, items, max } ) {
 
@@ -10,7 +11,7 @@ export function ProfileRelationsBox ( { type, title, items, max } ) {
         id: index,
         title: item,
         image: `https://github.com/${item}.png`,
-        url: `/users/${item.title}`
+        url: `/users/${item}`
       };
       return obj; 
     });
@@ -52,10 +53,10 @@ export function ProfileRelationsBox ( { type, title, items, max } ) {
               if(index < max) {
                 return (
                   <li key={item.id}>
-                    <a href={item.url} >
+                    <Link href={item.url} >
                       <img src={item.image} />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </li>
                 )
               }
@@ -63,7 +64,7 @@ export function ProfileRelationsBox ( { type, title, items, max } ) {
           }
         </ul>
         <hr />
-        <a href="/" className="boxLink">Ver todas</a>
+        <Link href={type} className="boxLink">Ver todas</Link>
     </ProfileRelationsBox.Wrapper>
   )
 }

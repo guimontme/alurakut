@@ -6,7 +6,7 @@ const BASE_URL = 'http://alurakut.vercel.app/';
 const v = '1';
 
 
-function Link({ href, children, ...props }) {
+export function Link({ href, children, ...props }) {
   return (
     <NextLink href={href} passHref>
       <a {...props}>
@@ -27,7 +27,10 @@ export function AlurakutMenu({ githubUser }) {
         <AlurakutMenu.Logo src={`${BASE_URL}/logo.svg`} />
 
         <nav style={{ flex: 1 }}>
-          {[{ name: 'Inicio', slug: '/'}, {name: 'Amigos', slug: '/amigos'}, {name: 'Comunidades', slug: '/comunidades'}].map((menuItem) => (
+          { [{ name: 'Home', slug: '/'}, 
+            {name: 'Friends', slug: '/friends'}, 
+            {name: 'Communities', slug: '/communities'}
+            ].map((menuItem) => (
             <Link key={`key__${menuItem.name.toLocaleLowerCase()}`} href={`${menuItem.slug.toLocaleLowerCase()}`}>
               {menuItem.name}
             </Link>
@@ -36,10 +39,10 @@ export function AlurakutMenu({ githubUser }) {
 
         <nav>
           <a href={`/logout`}>
-            Sair
+            Logout
           </a>
           <div>
-            <input placeholder="Pesquisar no Alurakut" />
+            <input placeholder="Search on Alurakut" />
           </div>
         </nav>
 
@@ -328,11 +331,11 @@ OrkutNostalgicIconSet.List = styled.ul`
 // ================================================================================================================
 const AlurakutLoginScreen = css`
   :root {
-    --backgroundPrimary: #D9E6F6;
+    --backgroundPrimary: #D6E6F6;
     --backgroundSecondary: #F1F9FE;
     --backgroundTertiary: #FFFFFF;
     --backgroundQuarternary: #BBCDE8;
-    --colorPrimary: #2E7BB4;
+    --colorPrimary: #5A5A5A;
     --colorSecondary: #388BB0;
     --colorTertiary: #2F4A71;
     --colorQuarternary: #D81D99;
@@ -421,6 +424,16 @@ const AlurakutLoginScreen = css`
         p {
           font-size: 14px;
         }
+        .pForm {
+          margin-bottom: 16px;
+        }
+        .error {
+          font-size: 14px; 
+          color: red;
+          display: flex;
+          padding-bottom: 16px;
+        }
+        .link,
         a {
           text-decoration: none;
           color: var(--colorPrimary);
@@ -432,7 +445,7 @@ const AlurakutLoginScreen = css`
           padding: 12px;
           background-color: var(--backgroundTertiary);
           border-radius: var(--commonRadius);
-          margin-top: 24px;
+          /* margin-top: 16px; */
           margin-bottom: 16px;
         }
         button {
@@ -480,6 +493,7 @@ export const AlurakutStyles = css`
   *::-webkit-scrollbar-thumb:hover {
     background: #555; 
   }
+  .link,
   a,
   button {
     cursor: pointer;
